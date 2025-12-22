@@ -136,7 +136,7 @@
 
 <body>
     <div class="container">
-        <h1>오디오 청취 평가</h1>
+        <h1>오디오 청취 평가<br>Audio Listening Evaluation</h1>
 
         <!-- Google Script URL 입력 안내 (배포 시 제거하거나 hidden으로 처리 가능) -->
         <div id="setup-area" class="setup-notice hidden">
@@ -159,7 +159,9 @@
 
         <div id="survey-content" class="hidden">
             <div class="audio-section">
-                <p>아래 오디오를 듣고 평가해주세요.</p>
+                <p>재생 구간에는 두 사람의 목소리가 혼합되어 들립니다.<br>그 중 실제로 의미 있는 발화를 한다고 판단되는 화자를 기준으로 답변을 해주세요.</p>
+                <p>The audio contains overlapping voices.<br>Please focus your response on the speaker providing
+                    meaningful content.</p>
                 <audio id="audio-player" controls controlsList="nodownload" preload="auto">
                     Your browser does not support the audio element.
                 </audio>
@@ -173,11 +175,11 @@
                     <div class="options">
                         <label class="option-label">
                             <input type="radio" name="perception_yn" value="Y" required>
-                            Yes (들림)
+                            Yes (들림, Audible)
                         </label>
                         <label class="option-label">
                             <input type="radio" name="perception_yn" value="N" required>
-                            No (안 들림)
+                            No (안 들림, Inaudible)
                         </label>
                     </div>
                 </div>
@@ -186,7 +188,7 @@
                 <div class="question">
                     <label>2. 발화 인지 난이도 (Difficulty)</label>
                     <p style="font-size: 0.9em; color: #666; margin-top: -5px; margin-bottom: 10px;">
-                        1 (매우 어려움) ~ 5 (매우 쉬움)
+                        1 (매우 쉬움, Very Easy) ~ 5 (매우 어려움, Very Difficult)
                     </p>
                     <div class="options">
                         <label class="option-label"><input type="radio" name="perception_difficulty" value="1" required>
@@ -201,8 +203,8 @@
                             5</label>
                     </div>
                     <div class="scale-labels">
-                        <span>매우 어려움</span>
-                        <span>매우 쉬움</span>
+                        <span>매우 쉬움 (Very Easy)</span>
+                        <span>매우 어려움 (Very Difficult)</span>
                     </div>
                 </div>
 
@@ -210,7 +212,7 @@
                 <div class="question">
                     <label>3. 음향적 불쾌감 (Annoyance)</label>
                     <p style="font-size: 0.9em; color: #666; margin-top: -5px; margin-bottom: 10px;">
-                        1 (전혀 불쾌하지 않음) ~ 5 (매우 불쾌함)
+                        1 (전혀 불쾌하지 않음, Not Annoying at all) ~ 5 (매우 불쾌함, Very Annoying)
                     </p>
                     <div class="options">
                         <label class="option-label"><input type="radio" name="annoyance" value="1" required> 1</label>
@@ -220,8 +222,8 @@
                         <label class="option-label"><input type="radio" name="annoyance" value="5" required> 5</label>
                     </div>
                     <div class="scale-labels">
-                        <span>불쾌하지 않음</span>
-                        <span>매우 불쾌함</span>
+                        <span>불쾌하지 않음 (Not Annoying at all)</span>
+                        <span>매우 불쾌함 (Very Annoying)</span>
                     </div>
                 </div>
 
