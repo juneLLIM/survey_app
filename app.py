@@ -12,12 +12,19 @@ app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 AUDIO_DIR = os.path.join(BASE_DIR, '../data/complex_mix')
 RESULTS_FILE = os.path.join(BASE_DIR, 'survey_results.csv')
+COMMENTS_FILE = os.path.join(BASE_DIR, 'survey_comments.csv')
 
 # Ensure results file exists with headers
 if not os.path.exists(RESULTS_FILE):
     with open(RESULTS_FILE, 'w', newline='', encoding='utf-8-sig') as f:
         writer = csv.writer(f)
         writer.writerow(['timestamp', 'name', 'audio_file', 'perception_yn', 'perception_difficulty', 'annoyance', 'user_agent'])
+
+# Ensure comments file exists with headers
+if not os.path.exists(COMMENTS_FILE):
+    with open(COMMENTS_FILE, 'w', newline='', encoding='utf-8-sig') as f:
+        writer = csv.writer(f)
+        writer.writerow(['timestamp', 'name', 'comment'])
 
 def get_audio_files():
     """Recursively find all audio files in the AUDIO_DIR."""
@@ -69,7 +76,22 @@ def submit_survey():
     
     return jsonify({'status': 'success'})
 
+@app.route('/api/submit_comment', methods=['POST'])
+def submit_comment():
+    data = request.json
+    
+    with open(COMMENTS_FILE, 'a', newline='', encoding='utf-8-sig') as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            datetime.now().isoformat(),
+            data.get('name'),
+            data.get('comment')
+        ])
+    
+    return jsonify({'status': 'success'})
+
 if __name__ == '__main__':
     print(f"Serving audio from: {AUDIO_DIR}")
     print(f"Saving results to: {RESULTS_FILE}")
+    print(f"Saving comments to: {COMMENTS_FILE}")
     app.run(host='0.0.0.0', port=5000, debug=True)
