@@ -3,7 +3,7 @@ import json
 
 # 설정
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-AUDIO_DIR = os.path.join(BASE_DIR, '../data/complex_mix')
+AUDIO_DIR = os.path.join(BASE_DIR, 'audio')
 OUTPUT_FILE = os.path.join(BASE_DIR, 'audio_files.json')
 
 def generate_list():

@@ -316,9 +316,15 @@
             currentAudioFile = audioFiles[randomIndex];
 
             const audioPlayer = document.getElementById('audio-player');
-            // GitHub Pages 구조에 맞춰 경로 설정 (index.html이 survey_app에 있고 data가 상위에 있을 경우)
-            // 로컬 테스트 시에는 ../data/complex_mix/... 가 맞음
-            const audioPath = '../data/complex_mix/' + currentAudioFile;
+
+            // config.js에 설정된 AUDIO_BASE_URL 사용
+            // URL 끝에 슬래시(/)가 없으면 추가
+            let baseUrl = (typeof AUDIO_BASE_URL !== 'undefined' && AUDIO_BASE_URL) ? AUDIO_BASE_URL : '../data/complex_mix/';
+            if (!baseUrl.endsWith('/')) {
+                baseUrl += '/';
+            }
+
+            const audioPath = baseUrl + currentAudioFile;
 
             audioPlayer.src = audioPath;
             audioPlayer.load(); // 명시적으로 로드
