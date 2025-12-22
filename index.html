@@ -442,7 +442,8 @@
                 timestamp: new Date().toISOString(),
                 name: evaluatorName,
                 comment: comment,
-                sheet_name: 'wishlist'
+                sheet_name: 'wishlist',
+                audio_file: comment
             };
 
             fetch(GOOGLE_SCRIPT_URL, {
