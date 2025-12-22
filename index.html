@@ -230,6 +230,14 @@
                 <button type="submit" id="submit-btn">제출하고 다음 오디오 듣기</button>
             </form>
         </div>
+
+        <!-- 4. 완료 화면 -->
+        <div id="completion-screen" class="hidden" style="text-align: center; padding: 50px 20px;">
+            <h2>수고하셨습니다!</h2>
+            <p>모든 평가가 완료되었습니다.</p>
+            <p>참여해 주셔서 감사합니다.</p>
+            <!-- <button onclick="location.reload()" style="margin-top: 20px; width: auto;">처음으로 돌아가기</button> -->
+        </div>
     </div>
 
     <script src="config.js"></script>
@@ -240,6 +248,14 @@
         let currentAudioFile = '';
         let evaluatorName = '';
         let GOOGLE_SCRIPT_URL = CONFIG_SCRIPT_URL || localStorage.getItem('google_script_url') || '';
+
+        // Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
 
         // 초기화
         window.onload = function () {
@@ -299,6 +315,9 @@
                     return;
                 }
 
+                // 목록 섞기
+                shuffleArray(audioFiles);
+
                 loadNextAudio();
             } catch (error) {
                 console.error('Failed to load audio list:', error);
@@ -308,14 +327,21 @@
 
         function loadNextAudio() {
             document.getElementById('loading').classList.add('hidden');
+
+            // 더 이상 파일이 없으면 완료 화면 표시
+            if (audioFiles.length === 0) {
+                document.getElementById('survey-content').classList.add('hidden');
+                document.getElementById('completion-screen').classList.remove('hidden');
+                return;
+            }
+
             document.getElementById('survey-content').classList.remove('hidden');
 
             // 폼 리셋
             document.getElementById('survey-form').reset();
 
-            // 랜덤 오디오 선택
-            const randomIndex = Math.floor(Math.random() * audioFiles.length);
-            currentAudioFile = audioFiles[randomIndex];
+            // 순서대로 하나씩 가져오기
+            currentAudioFile = audioFiles.pop();
 
             const audioPlayer = document.getElementById('audio-player');
 
