@@ -246,7 +246,7 @@
             <p>참여해 주셔서 감사합니다.</p>
 
             <div id="wishlist-container"
-                style="margin-top: 40px; padding: 25px; background-color: #fff0f5; border-radius: 15px; box-shadow: 0 4px 15px rgba(255, 182, 193, 0.3); display: flex; flex-direction: column; align-items: center;">
+                style="margin-top: 40px; display: flex; flex-direction: column; align-items: center;">
                 <div id="wishlist-input-area"
                     style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <input type="text" id="subjective-comment"
@@ -449,7 +449,7 @@
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                 },
                 body: JSON.stringify(data)
             })
@@ -468,9 +468,13 @@
         }
 
         function closeSurvey() {
+            // Try multiple ways to close
+            window.open('', '_self').close();
             window.close();
             // Fallback if window.close() is blocked
-            alert('창을 닫아주세요.');
+            setTimeout(() => {
+                alert('창을 닫아주세요.');
+            }, 500);
         }
     </script>
 </body>
