@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Evaluation Survey</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max_width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .audio-section {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .question label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        .options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #loading {
+            text-align: center;
+            color: #666;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .setup-notice {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ffeeba;
+        }
+
+        /* Login Screen Styles */
+        #login-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        #login-name {
+            padding: 15px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>오디오 청취 평가<br>Audio Listening Evaluation</h1>
+
+        <!-- Google Script URL 입력 안내 (배포 시 제거하거나 hidden으로 처리 가능) -->
+        <div id="setup-area" class="setup-notice hidden">
+            <h3>⚠️ 설정 필요</h3>
+            <p>Google Apps Script 배포 URL을 입력해주세요.</p>
+            <input type="text" id="script-url"
+                placeholder="https://script.google.com/macros/s/AKfycbxBNEsHy5YneuaABdGLnMvvrkKIO1pWu79GRw8QoOmFZ72HFA01XQAdxbNW92FQXkvm/exec"
+                style="width: 100%; padding: 8px; margin-top: 5px;">
+            <button onclick="saveScriptUrl()" style="margin-top: 10px; width: auto;">URL 저장 및 시작</button>
+        </div>
+
+        <!-- 1. 로그인 화면 -->
+        <div id="login-screen">
+            <h3>평가자 정보를 입력해주세요</h3>
+            <input type="text" id="login-name" placeholder="이름 (예: 홍길동)" required>
+            <button onclick="startSurvey()">평가 시작하기</button>
+        </div>
+
+        <div id="loading" class="hidden">오디오 목록을 불러오는 중입니다...</div>
+
+        <div id="survey-content" class="hidden">
+            <div class="audio-section">
+                <p>재생 구간에는 두 사람의 목소리가 혼합되어 들립니다.<br>그 중 실제로 의미 있는 발화를 한다고 판단되는 화자를 기준으로 답변을 해주세요.</p>
+                <p>The audio contains overlapping voices.<br>Please focus your response on the speaker providing
+                    meaningful content.</p>
+                <audio id="audio-player" controls controlsList="nodownload" preload="auto">
+                    Your browser does not support the audio element.
+                </audio>
+                <p id="file-name" class="hidden" style="font-size: 0.8em; color: #999; margin-top: 10px;"></p>
+            </div>
+
+            <form id="survey-form">
+                <!-- 1. 발화 인지 여부 -->
+                <div class="question">
+                    <label>1. 발화 인지 여부 (Speech Perception)</label>
+                    <div class="options">
+                        <label class="option-label">
+                            <input type="radio" name="perception_yn" value="Y" required>
+                            Yes (들림, Audible)
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="perception_yn" value="N" required>
+                            No (안 들림, Inaudible)
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 2. 발화 인지 난이도 -->
+                <div class="question">
+                    <label>2. 발화 인지 난이도 (Difficulty)</label>
+                    <p style="font-size: 0.9em; color: #666; margin-top: -5px; margin-bottom: 10px;">
+                        1 (매우 쉬움, Very Easy) ~ 5 (매우 어려움, Very Difficult)
+                    </p>
+                    <div class="options">
+                        <label class="option-label"><input type="radio" name="perception_difficulty" value="1" required>
+                            1</label>
+                        <label class="option-label"><input type="radio" name="perception_difficulty" value="2" required>
+                            2</label>
+                        <label class="option-label"><input type="radio" name="perception_difficulty" value="3" required>
+                            3</label>
+                        <label class="option-label"><input type="radio" name="perception_difficulty" value="4" required>
+                            4</label>
+                        <label class="option-label"><input type="radio" name="perception_difficulty" value="5" required>
+                            5</label>
+                    </div>
+                    <div class="scale-labels">
+                        <span>매우 쉬움 (Very Easy)</span>
+                        <span>매우 어려움 (Very Difficult)</span>
+                    </div>
+                </div>
+
+                <!-- 3. 음향적 불쾌감 -->
+                <div class="question">
+                    <label>3. 음향적 불쾌감 (Annoyance)</label>
+                    <p style="font-size: 0.9em; color: #666; margin-top: -5px; margin-bottom: 10px;">
+                        1 (전혀 불쾌하지 않음, Not Annoying at all) ~ 5 (매우 불쾌함, Very Annoying)
+                    </p>
+                    <div class="options">
+                        <label class="option-label"><input type="radio" name="annoyance" value="1" required> 1</label>
+                        <label class="option-label"><input type="radio" name="annoyance" value="2" required> 2</label>
+                        <label class="option-label"><input type="radio" name="annoyance" value="3" required> 3</label>
+                        <label class="option-label"><input type="radio" name="annoyance" value="4" required> 4</label>
+                        <label class="option-label"><input type="radio" name="annoyance" value="5" required> 5</label>
+                    </div>
+                    <div class="scale-labels">
+                        <span>불쾌하지 않음 (Not Annoying at all)</span>
+                        <span>매우 불쾌함 (Very Annoying)</span>
+                    </div>
+                </div>
+
+                <button type="submit" id="submit-btn">제출하고 다음 오디오 듣기</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // config.js에서 CONFIG_SCRIPT_URL을 불러옵니다.
+
+        let audioFiles = [];
+        let currentAudioFile = '';
+        let evaluatorName = '';
+        let GOOGLE_SCRIPT_URL = CONFIG_SCRIPT_URL || localStorage.getItem('google_script_url') || '';
+
+        // 초기화
+        window.onload = function () {
+            // URL 설정 확인
+            if (!GOOGLE_SCRIPT_URL) {
+                document.getElementById('setup-area').classList.remove('hidden');
+                document.getElementById('login-screen').classList.add('hidden');
+            } else {
+                // 이름 복원
+                const savedName = localStorage.getItem('evaluator_name');
+                if (savedName) {
+                    document.getElementById('login-name').value = savedName;
+                }
+            }
+        };
+
+        function saveScriptUrl() {
+            const url = document.getElementById('script-url').value.trim();
+            if (!url) {
+                alert('URL을 입력해주세요.');
+                return;
+            }
+            GOOGLE_SCRIPT_URL = url;
+            localStorage.setItem('google_script_url', url);
+            document.getElementById('setup-area').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        function startSurvey() {
+            const nameInput = document.getElementById('login-name');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                alert('이름을 입력해주세요.');
+                return;
+            }
+
+            evaluatorName = name;
+            localStorage.setItem('evaluator_name', name);
+
+            document.getElementById('login-screen').classList.add('hidden');
+            initSurvey();
+        }
+
+        async function initSurvey() {
+            document.getElementById('loading').classList.remove('hidden');
+            try {
+                // 오디오 목록 파일 로드
+                const response = await fetch('audio_files.json');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                audioFiles = await response.json();
+
+                if (!audioFiles || audioFiles.length === 0) {
+                    alert('오디오 파일 목록이 비어있습니다.');
+                    return;
+                }
+
+                loadNextAudio();
+            } catch (error) {
+                console.error('Failed to load audio list:', error);
+                alert('오디오 목록을 불러오는데 실패했습니다.\n\n[해결 방법]\n1. 로컬에서 실행 중이라면 "python -m http.server"를 사용하세요.\n2. GitHub Pages라면 잠시 후 다시 시도해보세요.');
+            }
+        }
+
+        function loadNextAudio() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('survey-content').classList.remove('hidden');
+
+            // 폼 리셋
+            document.getElementById('survey-form').reset();
+
+            // 랜덤 오디오 선택
+            const randomIndex = Math.floor(Math.random() * audioFiles.length);
+            currentAudioFile = audioFiles[randomIndex];
+
+            const audioPlayer = document.getElementById('audio-player');
+
+            // config.js에 설정된 AUDIO_BASE_URL 사용
+            // URL 끝에 슬래시(/)가 없으면 추가
+            let baseUrl = (typeof AUDIO_BASE_URL !== 'undefined' && AUDIO_BASE_URL) ? AUDIO_BASE_URL : '../data/complex_mix/';
+            if (!baseUrl.endsWith('/')) {
+                baseUrl += '/';
+            }
+
+            const audioPath = baseUrl + currentAudioFile;
+
+            audioPlayer.src = audioPath;
+            audioPlayer.load(); // 명시적으로 로드
+
+            // 오디오 로드 에러 처리
+            audioPlayer.onerror = function () {
+                console.error('Error loading audio:', audioPath);
+                alert('오디오 파일을 재생할 수 없습니다.\n경로: ' + audioPath + '\n\n파일이 존재하는지 확인해주세요.');
+            };
+
+            document.getElementById('file-name').textContent = currentAudioFile;
+        }
+
+        document.getElementById('survey-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const submitBtn = document.getElementById('submit-btn');
+
+            const data = {
+                timestamp: new Date().toISOString(),
+                name: evaluatorName,
+                audio_file: currentAudioFile,
+                perception_yn: formData.get('perception_yn'),
+                perception_difficulty: formData.get('perception_difficulty'),
+                annoyance: formData.get('annoyance'),
+                user_agent: navigator.userAgent
+            };
+
+            // "제출 중" 표시 대신 바로 다음으로 넘어감 (속도 개선)
+            // 백그라운드에서 전송
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            }).catch(error => {
+                console.error('Background submission error:', error);
+                // 실패해도 사용자에게 알리지 않고 진행 (데이터 유실 가능성은 있지만 속도 우선)
+            });
+
+            // 즉시 다음 오디오 로드
+            loadNextAudio();
+        });
+    </script>
+</body>
+
+</html>
