@@ -245,13 +245,18 @@
             <p>모든 평가가 완료되었습니다.</p>
             <p>참여해 주셔서 감사합니다.</p>
 
-            <div
+            <div id="wishlist-container"
                 style="margin-top: 40px; padding: 25px; background-color: #fff0f5; border-radius: 15px; box-shadow: 0 4px 15px rgba(255, 182, 193, 0.3); display: flex; flex-direction: column; align-items: center;">
-                <input type="text" id="subjective-comment"
-                    style="width: 150px; margin-bottom: 15px; padding: 12px; border: 1px solid #ffb6c1; border-radius: 8px; text-align: center;"
-                    placeholder="입력해주세요">
-                <button onclick="submitComment()" id="comment-submit-btn"
-                    style="background-color: #d63384; width: 150px;">🎁 사주세용 🎁</button>
+                <div id="wishlist-input-area"
+                    style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                    <input type="text" id="subjective-comment"
+                        style="width: 150px; margin-bottom: 15px; padding: 12px; border: 1px solid #ffb6c1; border-radius: 8px; text-align: center;"
+                        placeholder="입력해주세요">
+                    <button onclick="submitComment()" id="comment-submit-btn"
+                        style="background-color: #d63384; width: 150px;">🎁 사주세용 🎁</button>
+                </div>
+                <button onclick="closeSurvey()" id="exit-btn" class="hidden"
+                    style="background-color: #6c757d; width: 150px;">종료하기</button>
             </div>
 
             <!-- <button onclick="location.reload()" style="margin-top: 20px; width: auto;">처음으로 돌아가기</button> -->
@@ -450,8 +455,9 @@
             })
                 .then(() => {
                     alert('전송되었습니다!');
-                    btn.textContent = '전송 완료';
-                    document.getElementById('subjective-comment').value = '';
+                    // Hide input area and show exit button
+                    document.getElementById('wishlist-input-area').classList.add('hidden');
+                    document.getElementById('exit-btn').classList.remove('hidden');
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -459,6 +465,12 @@
                     btn.disabled = false;
                     btn.textContent = originalText;
                 });
+        }
+
+        function closeSurvey() {
+            window.close();
+            // Fallback if window.close() is blocked
+            alert('창을 닫아주세요.');
         }
     </script>
 </body>
