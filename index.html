@@ -449,15 +449,21 @@
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
-                    'Content-Type': 'text/plain',
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data)
             })
                 .then(() => {
                     alert('전송되었습니다!');
                     // Hide input area and show exit button
-                    document.getElementById('wishlist-input-area').classList.add('hidden');
-                    document.getElementById('exit-btn').classList.remove('hidden');
+                    const inputArea = document.getElementById('wishlist-input-area');
+                    const exitBtn = document.getElementById('exit-btn');
+
+                    if (inputArea) inputArea.style.display = 'none';
+                    if (exitBtn) {
+                        exitBtn.classList.remove('hidden');
+                        exitBtn.style.display = 'block'; // Force display
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -471,9 +477,9 @@
             // Try multiple ways to close
             window.open('', '_self').close();
             window.close();
-            // Fallback if window.close() is blocked
+            // Fallback
             setTimeout(() => {
-                alert('창을 닫아주세요.');
+                alert('브라우저 보안 설정으로 인해 창이 닫히지 않을 수 있습니다.\n직접 창을 닫아주세요.');
             }, 500);
         }
     </script>
