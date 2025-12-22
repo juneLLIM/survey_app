@@ -173,18 +173,22 @@
                 <div class="question">
                     <label>1. 발화 인지 여부 (Speech Perception)</label>
                     <div class="options">
-                        <label class="option-label">
-                            <input type="radio" name="perception_yn" value="Y" required>
-                            Yes
-                        </label>
-                        <label class="option-label">
-                            <input type="radio" name="perception_yn" value="N" required>
-                            No
-                        </label>
-                    </div>
-                    <div class="scale-labels">
-                        <span>들림<br>(Audible)</span>
-                        <span>안 들림<br>(Inaudible)</span>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <label class="option-label">
+                                <input type="radio" name="perception_yn" value="Y" required>
+                                Yes
+                            </label>
+                            <span
+                                style="font-size: 0.8em; color: #666; text-align: center; margin-top: 5px;">들림<br>(Audible)</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <label class="option-label">
+                                <input type="radio" name="perception_yn" value="N" required>
+                                No
+                            </label>
+                            <span style="font-size: 0.8em; color: #666; text-align: center; margin-top: 5px;">안
+                                들림<br>(Inaudible)</span>
+                        </div>
                     </div>
                 </div>
 
