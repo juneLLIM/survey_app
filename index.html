@@ -150,9 +150,9 @@
 
         <!-- 1. 로그인 화면 -->
         <div id="login-screen">
-            <h3>평가자 정보를 입력해주세요</h3>
+            <h3>평가자 정보를 입력해주세요<br>Please enter your name.</h3>
             <input type="text" id="login-name" placeholder="이름 (예: 임주은)" required>
-            <button onclick="startSurvey()">평가 시작하기</button>
+            <button onclick="startSurvey()">Start evaluation</button>
         </div>
 
         <div id="loading" class="hidden">오디오 목록을 불러오는 중입니다...</div>
@@ -235,15 +235,15 @@
                     </div>
                 </div>
 
-                <button type="submit" id="submit-btn">제출하고 다음 오디오 듣기</button>
+                <button type="submit" id="submit-btn">Submit and continue</button>
             </form>
         </div>
 
         <!-- 4. 완료 화면 -->
         <div id="completion-screen" class="hidden" style="text-align: center; padding: 50px 20px;">
-            <h2>수고하셨습니다!</h2>
-            <p>모든 평가가 완료되었습니다.</p>
-            <p>참여해 주셔서 감사합니다.</p>
+            <h2>Thank you!</h2>
+            <p>All evaluations are complete.</p>
+            <p>We appreciate your participation.</p>
 
             <div id="wishlist-container"
                 style="margin-top: 40px; display: flex; flex-direction: column; align-items: center;">
@@ -251,12 +251,12 @@
                     style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <input type="text" id="subjective-comment"
                         style="width: 150px; margin-bottom: 15px; padding: 12px; border: 1px solid #ffb6c1; border-radius: 8px; text-align: center;"
-                        placeholder="커피">
+                        placeholder="Coffee ☕">
                     <button onclick="submitComment()" id="comment-submit-btn"
-                        style="background-color: #d63384; width: 150px;">🎁 사주세용 🎁</button>
+                        style="background-color: #d63384; width: 150px;">🎁 I'd like.. 🎁</button>
                 </div>
                 <button onclick="closeSurvey()" id="exit-btn" class="hidden"
-                    style="background-color: #6c757d; width: 150px;">종료하기</button>
+                    style="background-color: #6c757d; width: 150px;">Exit</button>
             </div>
 
             <!-- <button onclick="location.reload()" style="margin-top: 20px; width: auto;">처음으로 돌아가기</button> -->
