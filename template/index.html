@@ -152,6 +152,7 @@
         <div id="login-screen">
             <h3>평가자 정보를 입력해주세요<br>Please enter your name.</h3>
             <input type="text" id="login-name" placeholder="이름 (예: 임주은)" required>
+            <p>이어폰 착용을 권장합니다.<br>Using earphones is recommended.</p>
             <button onclick="startSurvey()">Start Evaluation</button>
         </div>
 
@@ -159,9 +160,10 @@
 
         <div id="survey-content" class="hidden">
             <div class="audio-section">
-                <p>재생 구간에는 두 사람의 목소리가 혼합되어 들립니다.<br>그 중 실제로 의미 있는 발화를 한다고 판단되는 화자를 기준으로 답변을 해주세요.</p>
+                <p>재생 구간에는 두 사람의 목소리가 혼합되어 들립니다.<br>그 중 실제로 의미 있는 발화를 한다고 판단되는 화자를 기준으로 답변을 해주세요.<br>오디오는 여러 번 재생해도
+                    괜찮습니다.</p>
                 <p>The audio contains overlapping voices.<br>Please focus your response on the speaker providing
-                    meaningful content.</p>
+                    meaningful content.<br>It is okay to play the audio multiple times.</p>
                 <audio id="audio-player" controls controlsList="nodownload" preload="auto">
                     Your browser does not support the audio element.
                 </audio>

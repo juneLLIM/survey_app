@@ -162,6 +162,7 @@
                 <p>재생 구간에는 두 사람의 목소리가 혼합되어 들립니다.<br>그 중 실제로 의미 있는 발화를 한다고 판단되는 화자를 기준으로 답변을 해주세요.</p>
                 <p>The audio contains overlapping voices.<br>Please focus your response on the speaker providing
                     meaningful content.</p>
+                <p id="progress-display" style="font-weight: bold; color: #007bff; margin-bottom: 15px;"></p>
                 <audio id="audio-player" controls controlsList="nodownload" preload="auto">
                     Your browser does not support the audio element.
                 </audio>
@@ -268,6 +269,7 @@
         // config.js에서 CONFIG_SCRIPT_URL을 불러옵니다.
 
         let audioFiles = [];
+        let totalQuestions = 0;
         let currentAudioFile = '';
         let evaluatorName = '';
         let GOOGLE_SCRIPT_URL = CONFIG_SCRIPT_URL || localStorage.getItem('google_script_url') || '';
@@ -340,6 +342,7 @@
 
                 // 목록 섞기
                 shuffleArray(audioFiles);
+                totalQuestions = audioFiles.length;
 
                 // // TEST MODE: Limit to 1 file
                 // audioFiles = audioFiles.slice(0, 1);
@@ -362,6 +365,10 @@
             }
 
             document.getElementById('survey-content').classList.remove('hidden');
+
+            // Update progress display
+            const currentQuestionNum = totalQuestions - audioFiles.length + 1;
+            document.getElementById('progress-display').textContent = `Question ${currentQuestionNum} / ${totalQuestions}`;
 
             // 폼 리셋
             document.getElementById('survey-form').reset();
